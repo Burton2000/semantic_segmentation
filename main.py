@@ -17,6 +17,18 @@ def random_crop(img, label):
     return crop[:, :, 0:3], crop[:, :, 3]
 
 
+def log_images(epoch, logs):
+    # Use the model to predict the values from the validation dataset.
+    test_pred_raw = keras_model.predict(train_ds.take(1))
+
+    # Log the confusion matrix as an image summary.
+    with file_writer.as_default():
+        tf.summary.image("Input", img_arr, step=epoch)
+        output = np.expand_dims(np.argmax(test_pred_raw, axis=2), axis=-1)
+        tf.summary.image("Predictions", output, step=epoch)
+
+
+# TODO: change to open source dataset and refactor.
 input_im = "./input.jpg"
 label_mask = "./label.png"
 
@@ -37,31 +49,21 @@ label_arr = np.expand_dims(label_arr, axis=-1)
 train_ds = tf.data.Dataset.from_tensor_slices(
     (img_arr, label_arr)).shuffle(1).batch(1)
 
-
+# Model.
 keras_model = model.uncompiled_unet()
 
+# Compile model.
 optimizer = tf.keras.optimizers.Adam()
 keras_model.compile(optimizer=optimizer, loss=tf.losses.SparseCategoricalCrossentropy())
 keras_model.summary()
 
+# Tensorboard callback.
 log_dir = Path("logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S"))
 file_writer = tf.summary.create_file_writer(str(log_dir.absolute()) + "\metrics")
 file_writer.set_as_default()
 tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1, update_freq='epoch')
 
-
-def log_images(epoch, logs):
-    # Use the model to predict the values from the validation dataset.
-    test_pred_raw = keras_model.predict(train_ds.take(1))
-
-    # Log the confusion matrix as an image summary.
-    with file_writer.as_default():
-        tf.summary.image("Input", img_arr, step=epoch)
-        output = np.expand_dims(np.argmax(test_pred_raw, axis=2), axis=-1)
-        tf.summary.image("Predictions", output, step=epoch)
-
-
-# Define the per-epoch lr callback.
+# Learning rate schedule callback.
 lr_callback = tf.keras.callbacks.LearningRateScheduler(lr_schedule)
 
 keras_model.fit(x=train_ds.take(1),  epochs=300, callbacks=[tensorboard_callback, lr_callback])
