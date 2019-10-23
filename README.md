@@ -2,6 +2,10 @@
 
 Semantic segmentation using U-Net architecture in TensorFlow 2.0 keras API
 
+TODO:
+* Clean up code
+* Add dataset
+
 References:
 * https://www.kaggle.com/keegil/keras-u-net-starter-lb-0-277
 * https://arxiv.org/pdf/1505.04597.pdf
