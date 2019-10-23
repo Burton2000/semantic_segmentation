@@ -1,17 +1,6 @@
 import tensorflow as tf
 from tensorflow.keras import layers
 
-
-def uncompiled_autoencoder():
-
-    input = tf.keras.Input(shape=(28, 28, 1))
-    conv1 = layers.Conv2D(filters=32, kernel_size=3, padding='same', activation='relu')(input)
-    conv2 = layers.Conv2D(filters=1, kernel_size=3, padding='same', activation='sigmoid')(conv1)
-    model = tf.keras.Model(inputs=input, outputs=conv2, name='test')
-
-    return model
-
-
 def uncompiled_unet():
     inputs = tf.keras.Input((128, 128, 3))
     layers.Lambda(lambda x: x / 255)(inputs)
