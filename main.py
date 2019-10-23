@@ -1,12 +1,13 @@
 import tensorflow as tf
 import numpy as np
 from PIL import Image
-import model
 import matplotlib.pyplot as plt
 import datetime
 from pathlib import Path
-from training import lr_schedule
 from skimage.transform import resize
+
+import model
+from training import lr_schedule
 
 
 def random_crop(img, label):
@@ -60,8 +61,7 @@ def log_images(epoch, logs):
         tf.summary.image("Predictions", output, step=epoch)
 
 
-# Define the per-epoch callback.
-#im_callback = tf.keras.callbacks.LambdaCallback(on_epoch_end=log_images)
+# Define the per-epoch lr callback.
 lr_callback = tf.keras.callbacks.LearningRateScheduler(lr_schedule)
 
 keras_model.fit(x=train_ds.take(1),  epochs=300, callbacks=[tensorboard_callback, lr_callback])
