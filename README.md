@@ -1,6 +1,6 @@
 # Semantic segmentation
 
-Semantic segmentation using U-Net architecture in TensorFlow 2.0
+Semantic segmentation using U-Net architecture in TensorFlow 2.0 keras API
 
 References:
 * https://www.kaggle.com/keegil/keras-u-net-starter-lb-0-277
