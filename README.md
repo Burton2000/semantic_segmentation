@@ -1,4 +1,4 @@
-# Semantic segmentation
+# Semantic segmentation using U-Net 
 
 Semantic segmentation using U-Net architecture in TensorFlow 2.0 keras API
 
